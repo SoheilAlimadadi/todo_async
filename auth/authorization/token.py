@@ -10,16 +10,20 @@ from jose import (
     JWTError
 )
 from fastapi import Depends
+from fastapi.security import OAuth2PasswordBearer
 
 from kernel.settings.auth import (
     SECRET_KEY,
     ALGORITHM,
     ACCESS_TOKEN_EXPIRE_MINUTES
 )
+from auth.models import User
 from .schema import Token
-from fastapi.security import OAuth2PasswordBearer
 from auth.exceptions import credentials_exception
-from auth.repository.dal import AuthDataAccessLayer
+from auth.repository.dal import (
+    AuthDataAccessLayer,
+    IAuthDataAccessLayer
+)
 
 
 coreLogger = logging.getLogger('core')
@@ -71,7 +75,13 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
             f"user: {username}, error: {e}"
             )
         raise credentials_exception
-    dal = AuthDataAccessLayer()
+    user = await get_user(username)
+    return user
+
+async def get_user(
+        username: str,
+        dal: IAuthDataAccessLayer=Depends(AuthDataAccessLayer)
+) -> User:
     user = await dal.get_user(username=username)
     if user is None:
         coreLogger.error(

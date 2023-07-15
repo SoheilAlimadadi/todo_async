@@ -1,6 +1,7 @@
 from fastapi import (
     APIRouter,
-    status
+    status,
+    Depends
 )
 
 from .schemas import (
@@ -8,6 +9,10 @@ from .schemas import (
     RegisterUserOut
 )
 from auth.repository.bll import UserService
+from auth.repository.dal import (
+    AuthDataAccessLayer,
+    IAuthDataAccessLayer
+)
 
 registration_router = APIRouter()
 
@@ -17,7 +22,10 @@ registration_router = APIRouter()
         status_code=status.HTTP_201_CREATED,
         response_model=RegisterUserOut
 )
-async def register(user_data: RegisterUser) -> RegisterUserOut:
+async def register(
+    user_data: RegisterUser,
+    dal: IAuthDataAccessLayer = Depends(AuthDataAccessLayer)
+) -> RegisterUserOut:
     """
     Registers a new user.
 
@@ -30,8 +38,8 @@ async def register(user_data: RegisterUser) -> RegisterUserOut:
     Raises:
         HTTPException: If the registration fails due to invalid input or other errors.
     """
-    user_service = UserService()
-    user =  await user_service.register_user(
+    user =  await UserService.register_user(
+        dal=dal,
         username=user_data.username,
         password1=user_data.password1,
         password2=user_data.password2

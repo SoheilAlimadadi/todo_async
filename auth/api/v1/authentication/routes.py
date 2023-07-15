@@ -6,6 +6,10 @@ from fastapi import (
 
 from fastapi.security import OAuth2PasswordRequestForm
 from auth.repository.bll import UserService
+from auth.repository.dal import (
+    IAuthDataAccessLayer,
+    AuthDataAccessLayer
+)
 from auth.authorization import (
     create_access_token,
     Token
@@ -20,7 +24,10 @@ authentication_router = APIRouter()
         status_code=status.HTTP_200_OK,
         response_model=Token
 )
-async def login(user_data: OAuth2PasswordRequestForm=Depends()) -> Token:
+async def login(
+    user_data: OAuth2PasswordRequestForm=Depends(),
+    dal: IAuthDataAccessLayer = Depends(AuthDataAccessLayer)
+) -> Token:
     """
     Authenticates a user and returns an access token.
 
@@ -33,10 +40,10 @@ async def login(user_data: OAuth2PasswordRequestForm=Depends()) -> Token:
     Raises:
         HTTPException: If the user's login credentials are invalid.
     """
-    user_service = UserService()
-    user = await user_service.verify_credentials(
-        user_data.username,
-        user_data.password
+    user = await UserService.verify_credentials(
+        dal=dal,
+        username=user_data.username,
+        password=user_data.password
     )
     access_token = create_access_token(data={"sub": user.username})
     return access_token

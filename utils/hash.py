@@ -1,15 +1,13 @@
 from passlib.context import CryptContext
 
 
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 class Hash:
     """
     A class that provides methods to hash and verify passwords.
     """
-
-    def  __init__(self) -> None:
-        self.pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-    def bcrypt_pass(self, password: str) -> str:
+    @staticmethod
+    def bcrypt_pass(password: str) -> str:
         """
         Hashes the specified password using the bcrypt scheme.
 
@@ -19,10 +17,10 @@ class Hash:
         Returns:
             str: The hashed password.
         """
-        return self.pwd_context.hash(password)
+        return pwd_context.hash(password)
 
+    @staticmethod
     def verify_password(
-            self,
             plain_password: str,
             hashed_password: str
     ) -> bool:
@@ -38,4 +36,4 @@ class Hash:
             bool: True if the plain password matches the hashed password,
             False otherwise.
         """
-        return self.pwd_context.verify(plain_password, hashed_password)
+        return pwd_context.verify(plain_password, hashed_password)
