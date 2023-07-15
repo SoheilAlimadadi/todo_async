@@ -10,6 +10,7 @@ packages = [{include = "twt_followers"}]
 python = "^3.11"
 fastapi = "^0.100.0"
 beanie = "^1.20.0"
+uvicorn = {extras = ["standard"], version = "^0.22.0"}
 
 
 [build-system]
