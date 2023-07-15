@@ -1,0 +1,28 @@
+version = 1
+disable_existing_loggers = false
+
+[handlers.consoleHandler]
+level="DEBUG"
+class="logging.StreamHandler"
+formatter = "consoleFormatter"
+
+[handlers.coreHandler]
+level="DEBUG"
+class="logging.handlers.RotatingFileHandler"
+filename = "logs/core/core.log"
+maxBytes = 104857600
+backupCount = 5
+formatter = "coreFormatter"
+
+[formatters.consoleFormatter]
+format = "%(levelname)s %(asctime)s %(module)s %(message)s"
+datefmt = "%Y-%m-%d %H-%M-%S"
+
+[formatters.coreFormatter]
+format = "%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s"
+datefmt = "%Y-%m-%d %H-%M-%S"
+
+[loggers.core]
+handlers = ["coreHandler", "consoleHandler"]
+level = "DEBUG"
+propagate = false
