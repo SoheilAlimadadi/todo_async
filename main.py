@@ -12,6 +12,8 @@ from kernel.settings import (
 )
 
 
+coreLogger = logging.getLogger('core')
+
 def get_server(loop: AbstractEventLoop) -> Server:
     """
     takes a event loop and after configuration of the server, returns it.
@@ -34,13 +36,17 @@ def get_server(loop: AbstractEventLoop) -> Server:
 
 if __name__ == '__main__':
     setup_logging()
+
     try:
         loop = asyncio.get_running_loop()
-    except RuntimeError as ex:
+    except RuntimeError as e:
+        coreLogger.error(e)
         loop = asyncio.new_event_loop()
 
     try:
         server = get_server(loop=loop)
+        coreLogger.info('Application started, server is running')
         loop.run_until_complete(server.serve())
     finally:
         loop.close()
+        coreLogger.info('Application stopped.')
