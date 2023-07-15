@@ -1,10 +1,9 @@
 [tool.poetry]
-name = "twt-followers"
+name = "async-todo-list"
 version = "0.1.0"
 description = ""
 authors = ["soheil alimadadi <soheilblizzard@gmail.com>"]
 readme = "README.md"
-packages = [{include = "twt_followers"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
