@@ -46,10 +46,12 @@ if __name__ == '__main__':
         coreLogger.error(e)
         loop = asyncio.new_event_loop()
 
+    server = get_server(loop=loop)
     try:
-        server = get_server(loop=loop)
         coreLogger.info('Application started, server is running')
         loop.run_until_complete(server.serve())
+    except Exception as e:
+        coreLogger.critical(e)
     finally:
         loop.close()
         coreLogger.info('Application stopped.')

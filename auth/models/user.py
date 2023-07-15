@@ -1,10 +1,6 @@
 from datetime import datetime
 
-from beanie import (
-    Document,
-    before_event,
-    Insert
-)
+from beanie import Document
 from pydantic import (
     Field,
     EmailStr
@@ -37,6 +33,7 @@ class User(Document):
     )
 
     created: datetime = Field(
+        default=datetime.now(),
         description="User creation time"
     )
 
@@ -48,7 +45,3 @@ class User(Document):
 
     def __repr__(self):
         return f"<user: {self.username}>"
-
-    @before_event(Insert)
-    def completed_on(self):
-        self.created = datetime.now()
