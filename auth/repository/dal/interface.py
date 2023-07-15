@@ -30,7 +30,7 @@ class IAuthDataAccessLayer(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def create_user(self, username, password) -> User:
+    async def create_user(self, username: str, password: str) -> User:
         raise NotImplementedError
 
     @abstractmethod

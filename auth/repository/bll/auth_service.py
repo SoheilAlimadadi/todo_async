@@ -8,6 +8,7 @@ from fastapi import (
 from utils.hash import Hash
 from auth.models import User
 from auth.repository.dal import IAuthDataAccessLayer
+from auth.exceptions import credentials_exception
 
 
 coreLogger = logging.getLogger('core')
@@ -29,6 +30,7 @@ class UserService:
         Registers a new user with the provided username and passwords.
 
         Args:
+            dal (ITaskDataAccessLayer): data access layer of user model
             username (str): The username of the new user.
             password1 (str): The user's password.
             password2 (str): The user's password confirmation.
@@ -37,7 +39,8 @@ class UserService:
             User: The newly created user.
 
         Raises:
-            HTTPException: If the username is already in use or if the passwords do not match.
+            HTTPException: If the username is already in use or if
+            the passwords do not match.
         """
         user = await dal.get_user(username)
         if user:
@@ -66,9 +69,11 @@ class UserService:
         password: str
     ) -> User:
         """
-        Verifies the provided username and password and returns the corresponding user.
+        Verifies the provided username and password and returns the
+        corresponding user.
 
         Args:
+            dal (ITaskDataAccessLayer): data access layer of user model
             username (str): The username to be verified.
             password (str): The password to be verified.
 
@@ -97,4 +102,32 @@ class UserService:
                 detail="Invalid credentials, invalid password"
             )
         coreLogger.info(f"user: {username} has logged-in")
+        return user
+
+    @classmethod
+    async def get_user(
+            cls,
+            dal: IAuthDataAccessLayer,
+            username: str,
+    ) -> User:
+        """
+        Checks if user exists if it doesn't raises credentials error
+
+        Args:
+            dal (ITaskDataAccessLayer): data access layer of user model
+            username (str): The username(email) of the user
+
+        Returns:
+            User: The user associated with the provided username
+
+        Raises:
+            credential_exception: If the username doesn't exist
+        """
+        user = await dal.get_user(username)
+        if user is None:
+            coreLogger.error(
+                    "Credential error while verifying access token"
+                    f"user: {username}, user does not exist."
+                )
+            raise credentials_exception
         return user

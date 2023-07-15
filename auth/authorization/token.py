@@ -17,7 +17,11 @@ from kernel.settings.auth import (
     ALGORITHM,
     ACCESS_TOKEN_EXPIRE_MINUTES
 )
-from auth.models import User
+from auth.repository.bll import UserService
+from auth.repository.dal import (
+    IAuthDataAccessLayer,
+    AuthDataAccessLayer
+)
 from .schema import Token
 from auth.exceptions import credentials_exception
 
@@ -44,7 +48,10 @@ def create_access_token(data: dict) -> Token:
     coreLogger.info(f"JWT access token was created for user: {data.get('sub')}")
     return token
 
-async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
+async def get_current_user(
+        token: Annotated[str, Depends(oauth2_scheme)],
+        dal: IAuthDataAccessLayer = Depends(AuthDataAccessLayer)
+):
     """
     Verifies the provided access token and returns the corresponding user.
 
@@ -72,17 +79,5 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
             f"user: {username}, error: {e}"
             )
         raise credentials_exception
-    user = await get_user(username)
-    return user
-
-async def get_user(
-        username: str,
-) -> User:
-    user = await User.find_one(User.username==username)
-    if user is None:
-        coreLogger.error(
-                "Credential error while verifying access token"
-                f"user: {username}, user does not exist."
-            )
-        raise credentials_exception
+    user = await UserService.get_user(dal, username)
     return user

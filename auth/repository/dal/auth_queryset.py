@@ -30,7 +30,7 @@ class AuthDataAccessLayer(IAuthDataAccessLayer):
         """
         return await User.find_one(User.username == username)
 
-    async def create_user(self, username, password) -> User:
+    async def create_user(self, username: str, password: str) -> User:
         """
         Creates a new user with the provided username and password.
 
