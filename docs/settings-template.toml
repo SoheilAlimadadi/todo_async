@@ -1,0 +1,27 @@
+# change name to 'settings.toml'
+
+[settings]
+
+
+[settings.fastapi]
+
+HOST = "port"
+PORT = 'host'
+
+[settings.log]
+LOG_DIRS = [
+    ['logs'],
+    ['logs', 'core'],
+    # if you want to add more, you have too add loggers, formmatter and handlers to configs/logging/logging.toml
+]
+
+[settings.mongodb]
+
+DATABASE_URL = "database_url" # check mongodb website for more information
+
+
+[settings.auth]
+
+SECRET_KEY = "secure-secret-key"
+ALGORITHM = "algorithm-to-be-used-for-generating-token"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30 # in minutes
