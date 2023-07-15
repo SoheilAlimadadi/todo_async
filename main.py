@@ -1,5 +1,7 @@
 import logging
+
 import uvicorn
+import uvloop
 from uvicorn import Server
 import asyncio
 from asyncio import AbstractEventLoop
@@ -35,6 +37,7 @@ def get_server(loop: AbstractEventLoop) -> Server:
 
 
 if __name__ == '__main__':
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
     setup_logging()
 
     try:
