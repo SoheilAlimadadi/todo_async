@@ -1,6 +1,6 @@
 # Project Instructions
 
-## 1. clone the project
+## 1. clone the project and cd to the project folder
 
 ## 2. add settings.toml in the root of the project, you can find the template in docs folder
 
