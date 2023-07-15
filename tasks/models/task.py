@@ -47,7 +47,7 @@ class Task(Document):
     completed_on: Optional[datetime] = None
 
     class Settings:
-        name = "task_db"
+        name = "tasks"
         validate_on_save = True
 
     @before_event(Insert)

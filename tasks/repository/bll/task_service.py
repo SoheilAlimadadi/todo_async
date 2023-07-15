@@ -174,6 +174,11 @@ class TaskService:
             HTTPException: If the task does not exist.
         """
         task = await cls.get_task(dal, user, title)
+        if task.is_completed:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail='Task is already completed.'
+            )
         completed_task = await dal.update_task(
              task,
             {"is_completed": True, "completed_on": datetime.now()}

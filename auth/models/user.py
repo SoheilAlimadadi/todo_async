@@ -38,7 +38,7 @@ class User(Document):
     )
 
     class Settings:
-        name = "user_db"
+        name = "users"
 
     def __str__(self):
         return f"{self.username}"
