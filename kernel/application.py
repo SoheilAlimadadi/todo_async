@@ -7,7 +7,7 @@ from auth.api.v1 import (
     authentication_router,
     registration_router
 )
-
+from tasks.api.v1 import tasks_router
 
 app = FastAPI()
 coreLogger = logging.getLogger('core')
@@ -29,4 +29,9 @@ app.include_router(
     authentication_router,
     tags=["Authentication"],
     prefix="/v1/auth"
+)
+app.include_router(
+    tasks_router,
+    tags=["Tasks"],
+    prefix="/v1/tasks"
 )

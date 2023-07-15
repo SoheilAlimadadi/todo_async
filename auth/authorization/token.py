@@ -20,10 +20,7 @@ from kernel.settings.auth import (
 from auth.models import User
 from .schema import Token
 from auth.exceptions import credentials_exception
-from auth.repository.dal import (
-    AuthDataAccessLayer,
-    IAuthDataAccessLayer
-)
+
 
 
 coreLogger = logging.getLogger('core')
@@ -80,9 +77,8 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
 
 async def get_user(
         username: str,
-        dal: IAuthDataAccessLayer=Depends(AuthDataAccessLayer)
 ) -> User:
-    user = await dal.get_user(username=username)
+    user = await User.find_one(User.username==username)
     if user is None:
         coreLogger.error(
                 "Credential error while verifying access token"
